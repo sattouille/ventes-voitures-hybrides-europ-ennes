@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hybrides en Europe 2024 — Constructeurs européens</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --border: #e0ddd6;
+    --text: #1a1917;
+    --muted: #6b6860;
+    --hint: #a09e99;
+    --accent: #2d4ef5;
+    --success: #1a7a4a;
+    --danger: #c0392b;
+    --vw: #2d4ef5;
+    --stel: #6c3fc5;
+    --ren: #d44000;
+    --bmw: #1a7a4a;
+    --merc: #8a6a00;
+    --volvo: #0d5e56;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-left {}
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .badge {
+    background: var(--text);
+    color: var(--bg);
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    padding: 6px 12px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    align-items: center;
+  }
+
+  .ctrl-label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--hint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  .btn-group { display: flex; gap: 4px; }
+
+  button {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s;
+    font-weight: 400;
+  }
+
+  button:hover { background: var(--bg); color: var(--text); }
+
+  button.on {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+    font-weight: 500;
+  }
+
+  .divider {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+    margin: 0 6px;
+  }
+
+  /* Metrics */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+
+  .metric-label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  .metric-value {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .metric-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .metric-sub.up { color: var(--success); }
+  .metric-sub.down { color: var(--danger); }
+
+  /* Chart area */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 1rem;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 340px;
+  }
+
+  /* Brand cards */
+  .brands {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .brand-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    border-left: 3px solid;
+  }
+
+  .brand-name {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+    color: var(--hint);
+    margin-bottom: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .brand-marques {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Note */
+  .note {
+    font-size: 12px;
+    color: var(--hint);
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--hint);
+    font-family: 'DM Mono', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="eyebrow">Tableau de bord · Automobile européenne</div>
+      <h1>Hybrides en Europe 2024</h1>
+      <div class="subtitle">Constructeurs dont le siège est en Europe · HEV + PHEV · Données ACEA</div>
+    </div>
+    <div class="badge">2024 · 6 groupes</div>
+  </div>
+
+  <div class="controls">
+    <span class="ctrl-label">Vue</span>
+    <div class="btn-group">
+      <button class="on" data-v="volumes">Volumes</button>
+      <button data-v="pdm">Parts de marché</button>
+      <button data-v="evo">Évolution vs 2023</button>
+    </div>
+    <div class="divider"></div>
+    <span class="ctrl-label">Type</span>
+    <div class="btn-group">
+      <button class="on" data-c="bar">Barres</button>
+      <button data-c="barh">Horizontal</button>
+      <button data-c="pie">Camembert</button>
+    </div>
+  </div>
+
+  <div class="metrics" id="mets"></div>
+
+  <div class="chart-card">
+    <div class="legend" id="leg"></div>
+    <div class="chart-wrap">
+      <canvas id="ch" role="img" aria-label="Ventes hybrides constructeurs européens 2024"></canvas>
+    </div>
+    <div class="note" id="nt"></div>
+  </div>
+
+  <div class="brands">
+    <div class="brand-card" style="border-left-color:#2d4ef5">
+      <div class="brand-name">Volkswagen Group</div>
+      <div class="brand-sub">🇩🇪 Allemagne</div>
+      <div class="brand-marques">VW · Audi · Skoda · Seat/Cupra · Porsche</div>
+    </div>
+    <div class="brand-card" style="border-left-color:#6c3fc5">
+      <div class="brand-name">Stellantis</div>
+      <div class="brand-sub">🇫🇷🇮🇹 Franco-italo-américain</div>
+      <div class="brand-marques">Peugeot · Citroën · Opel · Fiat · Alfa Romeo · DS</div>
+    </div>
+    <div class="brand-card" style="border-left-color:#d44000">
+      <div class="brand-name">Renault Group</div>
+      <div class="brand-sub">🇫🇷 France</div>
+      <div class="brand-marques">Renault · Dacia · Alpine</div>
+    </div>
+    <div class="brand-card" style="border-left-color:#1a7a4a">
+      <div class="brand-name">BMW Group</div>
+      <div class="brand-sub">🇩🇪 Allemagne</div>
+      <div class="brand-marques">BMW · Mini</div>
+    </div>
+    <div class="brand-card" style="border-left-color:#8a6a00">
+      <div class="brand-name">Mercedes-Benz</div>
+      <div class="brand-sub">🇩🇪 Allemagne</div>
+      <div class="brand-marques">Mercedes · AMG</div>
+    </div>
+    <div class="brand-card" style="border-left-color:#0d5e56">
+      <div class="brand-name">Volvo Cars</div>
+      <div class="brand-sub">🇸🇪 Suède</div>
+      <div class="brand-marques">Volvo</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Sources : ACEA 2024 · L'Argus · Motor1 · estimations HEV+PHEV</span>
+    <span>Généré avec Claude · Anthropic</span>
+  </div>
+
+</div>
+
+<script>
+const groups = [
+  {name:'VW Group',      v24:520, v23:465, evo:11.8, pdm:27.1, color:'#2d4ef5'},
+  {name:'Stellantis',    v24:480, v23:518, evo:-7.3, pdm:25.0, color:'#6c3fc5'},
+  {name:'Renault Group', v24:430, v23:395, evo:8.9,  pdm:22.4, color:'#d44000'},
+  {name:'BMW Group',     v24:270, v23:220, evo:22.7, pdm:14.1, color:'#1a7a4a'},
+  {name:'Mercedes-Benz', v24:160, v23:144, evo:11.1, pdm:8.3,  color:'#8a6a00'},
+  {name:'Volvo Cars',    v24:95,  v23:74,  evo:28.4, pdm:5.0,  color:'#0d5e56'},
+];
+
+const NOTES = {
+  volumes: 'Estimations hybrides (HEV + PHEV) en milliers de véhicules, issues des données ACEA 2024. BMW Group : forte hausse grâce aux Série 3/5 hybrides et X5. Stellantis : repli de –7,3 % toutes énergies, lié aux difficultés internes. Volvo : progression spectaculaire +28,4 % portée par les nouvelles gammes électrifiées.',
+  pdm: 'Parts du marché hybride européen entre constructeurs européens uniquement. VW Group et Stellantis dominent, mais la dynamique penche vers BMW et Volvo en forte croissance.',
+  evo: 'Variation des immatriculations hybrides 2023 → 2024. Volvo (+28,4 %) et BMW (+22,7 %) progressent le plus vite. Stellantis est le seul en recul (–7,3 %) parmi les constructeurs européens.'
+};
+
+const METS = {
+  volumes: [
+    {label:'Leader hybride EU', val:'VW Group', sub:'~520 000 véh.', cls:''},
+    {label:'Plus forte hausse', val:'Volvo +28,4 %', sub:'+21 000 unités', cls:'up'},
+    {label:'En recul', val:'Stellantis', sub:'−7,3 %', cls:'down'},
+    {label:'Total EU estimé', val:'~1,96 M', sub:'HEV + PHEV', cls:''},
+  ],
+  pdm: [
+    {label:'1er — VW Group', val:'27,1 %', sub:'du marché hybride EU', cls:''},
+    {label:'2e — Stellantis', val:'25,0 %', sub:'PDM en baisse', cls:'down'},
+    {label:'3e — Renault', val:'22,4 %', sub:'+8,9 % vs 2023', cls:'up'},
+    {label:'Segment premium', val:'BMW + Merc.', sub:'22,4 % à eux deux', cls:''},
+  ],
+  evo: [
+    {label:'Meilleure hausse', val:'Volvo +28,4 %', sub:'nouvelles gammes', cls:'up'},
+    {label:'BMW Group', val:'+22,7 %', sub:'X5, Série 5 hybrides', cls:'up'},
+    {label:'Seul en recul', val:'Stellantis −7,3 %', sub:'difficultés internes', cls:'down'},
+    {label:'Moy. secteur EU', val:'+12,6 %', sub:'toutes marques EU', cls:'up'},
+  ],
+};
+
+let vw = 'volumes', vc = 'bar', ch = null;
+
+function renderMets() {
+  document.getElementById('mets').innerHTML = METS[vw].map(m =>
+    `<div class="metric">
+      <div class="metric-label">${m.label}</div>
+      <div class="metric-value">${m.val}</div>
+      <div class="metric-sub ${m.cls}">${m.sub}</div>
+    </div>`
+  ).join('');
+}
+
+function renderLeg() {
+  const el = document.getElementById('leg');
+  if (vc === 'pie' || vw !== 'volumes') {
+    el.innerHTML = groups.map(g =>
+      `<span class="legend-item"><span class="legend-dot" style="background:${g.color}"></span>${g.name}</span>`
+    ).join('');
+  } else {
+    el.innerHTML = `
+      <span class="legend-item"><span class="legend-dot" style="background:#1a1917"></span>2024 (estimé)</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#c0bdb8"></span>2023 (estimé)</span>`;
+  }
+}
+
+function buildCfg() {
+  const labels = groups.map(g => g.name);
+  const colors = groups.map(g => g.color);
+  let type = vc === 'barh' ? 'bar' : vc === 'pie' ? 'doughnut' : 'bar';
+  let datasets, options;
+
+  if (vw === 'evo') {
+    const sorted = [...groups].sort((a,b) => b.evo - a.evo);
+    return {
+      type: vc === 'barh' ? 'bar' : 'bar',
+      data: {
+        labels: sorted.map(g => g.name),
+        datasets: [{
+          data: sorted.map(g => g.evo),
+          backgroundColor: sorted.map(g => g.evo >= 0 ? '#1a7a4a' : '#c0392b'),
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        indexAxis: vc === 'barh' ? 'y' : 'x',
+        plugins: { legend: {display:false}, tooltip: {callbacks:{label: c => {
+          const v = vc==='barh' ? c.parsed.x : c.parsed.y;
+          return ` ${v>0?'+':''}${v.toFixed(1)} %`;
+        }}}},
+        scales: {
+          x: {grid:{display: vc==='barh'}, ticks:{callback: v => (v>0?'+':'')+v+'%'}},
+          y: {grid:{display: vc!=='barh', color:'rgba(0,0,0,0.06)'}, ticks:{callback: v => (v>0?'+':'')+v+'%'}}
+        }
+      }
+    };
+  }
+
+  if (vw === 'volumes') {
+    if (type === 'doughnut') {
+      datasets = [{data: groups.map(g=>g.v24), backgroundColor: colors, borderWidth:2, borderColor:'#f5f4f0'}];
+    } else {
+      datasets = [
+        {label:'2024', data: groups.map(g=>g.v24), backgroundColor: colors, borderRadius:4},
+        {label:'2023', data: groups.map(g=>g.v23), backgroundColor: colors.map(c=>c+'66'), borderRadius:4},
+      ];
+    }
+  } else {
+    datasets = [{data: groups.map(g=>g.pdm), backgroundColor: colors, borderRadius:4, borderWidth: type==='doughnut'?2:0, borderColor:'#f5f4f0'}];
+  }
+
+  const isH = vc === 'barh';
+  const isDoughnut = type === 'doughnut';
+  options = {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:false}, tooltip:{callbacks:{label: c => {
+      const v = isDoughnut ? c.parsed : (isH ? c.parsed.x : c.parsed.y);
+      if (vw === 'volumes') return ` ${c.dataset?.label||'2024'} : ~${v} 000 véh.`;
+      return ` Part : ${v.toFixed(1)} %`;
+    }}}},
+  };
+  if (!isDoughnut) {
+    options.indexAxis = isH ? 'y' : 'x';
+    options.scales = {
+      x: {grid:{display:isH}, ticks:{callback: v => vw==='pdm' ? v+'%' : v+'k'}},
+      y: {grid:{display:!isH, color:'rgba(0,0,0,0.06)'}, beginAtZero:true, ticks:{callback: v => vw==='pdm' ? v+'%' : v+'k'}}
+    };
+  }
+  return {type, data:{labels, datasets}, options};
+}
+
+function render() {
+  renderMets();
+  renderLeg();
+  document.getElementById('nt').textContent = NOTES[vw];
+  if (ch) ch.destroy();
+  ch = new Chart(document.getElementById('ch'), buildCfg());
+}
+
+document.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-v]').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); vw = b.dataset.v; render();
+}));
+document.querySelectorAll('[data-c]').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-c]').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); vc = b.dataset.c; render();
+}));
+
+render();
+</script>
+</body>
+</html>
